@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리듬 게임 - 랭킹</title>
+    <link rel="stylesheet" href="css/ranking.css">
+    <link rel="stylesheet" href="css/select.css">
+    <style>
+      body { padding: 32px 20px; }
+      .container { max-width: 900px; margin: 0 auto; }
+      h1 { text-align:center; margin-bottom: 24px; }
+      .rank-tabs { display:flex; gap: 8px; justify-content:center; margin-bottom:24px; }
+      .rank-tab {
+        background: #12122a; border: 1px solid #2a2a4a; color: #888;
+        padding: 10px 22px; border-radius: 30px; font-size:14px; font-weight:600;
+        cursor:pointer; transition:all .2s;
+      }
+      .rank-tab.active {
+        background: linear-gradient(135deg, #ff6b9d, #c44dff);
+        color:#fff; border-color: transparent;
+      }
+      .track-list { display:flex; flex-direction:column; gap:10px; margin-top: 18px; }
+      .track-item {
+        display:flex; gap:14px; align-items:center;
+        background:#12122a; border:1px solid #2a2a4a; border-radius:12px;
+        padding:12px 16px; cursor:pointer; transition: all .15s;
+      }
+      .track-item:hover { border-color:#ff6b9d; background:#1a1a2e; }
+      .track-item img { width:54px; height:54px; border-radius:8px; }
+      .track-item .info { flex:1; }
+      .track-item .title { color:#fff; font-weight:700; font-size:15px; }
+      .track-item .artist { color:#888; font-size:13px; margin-top:2px; }
+      .play-count {
+        background: rgba(100,200,255,0.15); color:#64c8ff; padding:4px 12px;
+        border-radius:10px; font-size:12px; border:1px solid rgba(100,200,255,0.3);
+      }
+      .diff-tabs { display:flex; gap:6px; justify-content:center; margin:14px 0; }
+      .diff-tab {
+        background:#0a0a14; border:1px solid #30363d; color:#c9d1d9;
+        padding:6px 16px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;
+      }
+      .diff-tab.active.easy   { border-color:#39ff6e; color:#39ff6e; background:#39ff6e15; }
+      .diff-tab.active.normal { border-color:#ffe033; color:#ffe033; background:#ffe03315; }
+      .diff-tab.active.hard   { border-color:#ff4dbb; color:#ff4dbb; background:#ff4dbb15; }
+      table { width:100%; border-collapse:collapse; margin-top:16px; }
+      th, td { padding:10px 14px; border-bottom: 1px solid #2a2a4a; text-align:left; }
+      th { background:#12122a; color:#aaa; font-weight:600; font-size:13px; }
+      td { color:#fff; font-size:14px; }
+      .rank-num { font-weight:700; color:#ffd700; }
+      .grade-cell {
+        display:inline-block; padding:2px 8px; border-radius:6px; font-weight:700;
+        background:rgba(255,215,0,0.15); color:#ffd700;
+      }
+      #ranking-section { margin-top:24px; }
+      .selected-track {
+        display:flex; gap:14px; align-items:center;
+        background: rgba(255,107,157,0.08); border:1px solid rgba(255,107,157,0.3);
+        border-radius:12px; padding:14px 18px; margin-bottom: 16px;
+      }
+      .selected-track img { width:64px; height:64px; border-radius:8px; }
+      .home-btn-wrap { margin-top: 30px; text-align:center; }
+      #home-btn {
+        background: #2a2a4a; color:#fff; border:1px solid #555;
+        padding: 10px 28px; border-radius:10px; font-size:14px; cursor:pointer;
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>곡별 랭킹</h1>
+
+        <div class="rank-tabs">
+          <button class="rank-tab active" data-r="popular"> 인기 곡</button>
+          <button class="rank-tab" data-r="search">곡 검색</button>
+          <button class="rank-tab" data-r="me">내 기록</button>
+        </div>
+
+        <!-- 인기 곡 패널 -->
+        <div id="panel-popular" class="rank-panel">
+          <p style="text-align:center; color:#888; font-size:13px; margin-bottom:8px;">
+            플레이어들이 가장 많이 친 곡들. 클릭해서 TOP 20 랭킹 확인.
+          </p>
+          <div class="track-list" id="popular-list">
+            <div class="empty-state" style="text-align:center; color:#666; padding:40px;">불러오는 중...</div>
+          </div>
+        </div>
+
+        <!-- 검색 패널 -->
+        <div id="panel-search" class="rank-panel" style="display:none;">
+          <div class="itunes-search">
+            <input id="search-input" type="text" placeholder="아티스트 또는 곡 이름 입력" />
+            <button id="search-btn">검색</button>
+          </div>
+          <div class="track-list" id="search-results"></div>
+        </div>
+
+        <!-- 내 기록 패널 -->
+        <div id="panel-me" class="rank-panel" style="display:none;">
+          <p style="text-align:center; color:#888; font-size:13px; margin-bottom:8px;">
+            내가 플레이한 모든 곡의 베스트 기록.
+          </p>
+          <div class="track-list" id="me-list">
+            <div class="empty-state" style="text-align:center; color:#666; padding:40px;">불러오는 중...</div>
+          </div>
+        </div>
+
+        <!-- 곡 선택 후 랭킹 표시 -->
+        <div id="ranking-section" style="display:none;">
+          <div class="selected-track" id="selected-track-info"></div>
+          <div class="diff-tabs">
+            <button class="diff-tab active easy" data-d="easy">🟢 EASY</button>
+            <button class="diff-tab normal" data-d="normal">🟡 NORMAL</button>
+            <button class="diff-tab hard" data-d="hard">🔴 HARD</button>
+          </div>
+          <table id="ranking-table">
+            <thead>
+              <tr><th>순위</th><th>닉네임</th><th>점수</th><th>정확도</th><th>등급</th></tr>
+            </thead>
+            <tbody id="ranking-body"></tbody>
+          </table>
+        </div>
+
+        <div class="home-btn-wrap">
+          <button id="home-btn">홈으로</button>
+        </div>
+    </div>
+
+    <script src="js/ranking.js"></script>
+</body>
+</html>

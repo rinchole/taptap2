@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리듬 게임 - 결과</title>
+    <link rel="stylesheet" href="css/result.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>게임 결과</h1>
+
+        <!-- iTunes 곡일 때 아트워크 표시 -->
+        <div id="result-artwork" style="text-align:center;"></div>
+
+        <div class="result-box">
+            <div class="result-item">
+                <span class="label">곡</span>
+                <span class="value" id="result-song"></span>
+            </div>
+            <div class="result-item">
+                <span class="label">난이도</span>
+                <span class="value" id="result-diff"></span>
+            </div>
+
+            <div class="result-item highlight">
+                <span class="label">최종 점수</span>
+                <span class="value" id="result-score"></span>
+            </div>
+
+            <div class="result-item">
+                <span class="label">최대 콤보</span>
+                <span class="value" id="result-combo"></span>
+            </div>
+
+            <div class="result-item">
+                <span class="label">정확도</span>
+                <span class="value" id="result-accuracy"></span>
+            </div>
+
+            <div class="result-grade" id="result-grade"></div>
+        </div>
+
+        <p id="save-msg" style="margin-top:16px; color:#aaa; font-size:0.95rem;"></p>
+
+        <div class="btn-area">
+            <button id="retry-btn">다시하기</button>
+            <button id="home-btn">곡 선택으로</button>
+        </div>
+    </div>
+
+    <script src="js/result.js"></script>
+</body>
+</html>

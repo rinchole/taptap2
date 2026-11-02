@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리듬 게임 - 플레이</title>
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+
+    <div id="info-bar">
+    <span>점수: <span id="score">0</span></span>
+    <span>콤보: <span id="combo">0</span>x</span>
+    <button id="pause-btn" onclick="pauseGame()">⏸</button>
+</div>
+
+    <div id="game-area">
+        <div class="lane" id="lane-0"></div>
+        <div class="lane" id="lane-1"></div>
+        <div class="lane" id="lane-2"></div>
+        <div class="lane" id="lane-3"></div>
+
+        <div id="judge-line"></div>
+
+        <div id="key-area">
+            <div class="key" id="key-0">Q</div>
+            <div class="key" id="key-1">W</div>
+            <div class="key" id="key-2">O</div>
+            <div class="key" id="key-3">P</div>
+        </div>
+    </div>
+
+    <div id="judge-text"></div>
+
+    <script src="js/play.js"></script>
+</body>
+</html>

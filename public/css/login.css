@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1a1a2e;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+  width: 340px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #e94560;
+  margin-bottom: 30px;
+}
+
+/* 소셜 로그인 버튼 */
+.social-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-btn {
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.social-btn:hover {
+  opacity: 0.88;
+}
+
+.social-btn.kakao { background: #fee500; color: #191919; }
+.social-btn.google { background: #ffffff; color: #333333; }
+
+/* 입력 폼 (닉네임 설정 페이지에서도 사용) */
+.form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-box p.desc {
+  color: #aaa;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.form-box input {
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #444;
+  background: #16213e;
+  color: white;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-box input:focus {
+  outline: none;
+  border-color: #e94560;
+}
+
+.form-box button {
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #e94560;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.form-box button:hover {
+  background: #c73652;
+}
+
+.form-box button:disabled {
+  background: #666;
+  cursor: default;
+}
+
+/* 메시지 스타일 */
+.error-msg {
+  color: #e94560;
+  font-size: 0.9rem;
+  min-height: 20px;
+  margin-top: 8px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* 게스트 로그인 영역 */
+.guest-area {
+  margin-top: 20px;
+}
+
+.guest-area button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #444;
+  background: transparent;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.guest-area button:hover {
+  border-color: #e94560;
+  color: #e94560;
+}

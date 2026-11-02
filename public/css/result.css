@@ -1,0 +1,109 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1a1a2e;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #e94560;
+}
+
+/* 결과 박스 */
+.result-box {
+  background: #16213e;
+  border-radius: 15px;
+  padding: 30px 50px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* 각 결과 항목 */
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 12px 0;
+  border-bottom: 1px solid #333;
+  font-size: 1.2rem;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #aaa;
+}
+
+.value {
+  font-weight: bold;
+  color: white;
+}
+
+/* 점수 강조 */
+.result-item.highlight .value {
+  color: #e94560;
+  font-size: 1.5rem;
+}
+
+/* 등급 (S, A, B 등) */
+.result-grade {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #FFD700; /* 금색 포인트 */
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* 버튼 영역 */
+.btn-area {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.btn-area button {
+  padding: 15px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#retry-btn {
+  background: #e94560;
+  color: white;
+}
+
+#retry-btn:hover {
+  background: #c73652;
+  transform: translateY(-2px);
+}
+
+#home-btn {
+  background: #16213e;
+  color: white;
+  border: 2px solid #444;
+}
+
+#home-btn:hover {
+  border-color: #e94560;
+  transform: translateY(-2px);
+}

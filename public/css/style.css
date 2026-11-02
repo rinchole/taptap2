@@ -1,0 +1,387 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: transparent;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-container {
+  text-align: center;
+  padding: 40px 20px;
+  width: 100%;
+  max-width: 860px;
+}
+
+/* 타이틀 섹션 */
+.title-area {
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 72px;
+  font-weight: 900;
+  color: white;
+  text-shadow:
+    0 0 20px rgba(255, 107, 157, 0.9),
+    0 0 40px rgba(255, 107, 157, 0.6),
+    0 0 80px rgba(200, 100, 255, 0.4);
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+}
+
+.title-plus {
+  color: #64c8ff;
+  text-shadow:
+    0 0 20px rgba(100, 200, 255, 0.9),
+    0 0 40px rgba(100, 200, 255, 0.6);
+}
+
+.subtitle {
+  color: #aaa;
+  font-size: 15px;
+  letter-spacing: 6px;
+  margin-bottom: 48px;
+}
+
+/* 버튼 그룹 */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* 버튼 공통 스타일 */
+.btn {
+  display: inline-block;
+  padding: 18px;
+  border: none;
+  border-radius: 50px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn:hover {
+  opacity: 0.88;
+  transform: scale(1.02);
+}
+
+.btn-guest {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  color: white;
+}
+
+.btn-login {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-login:hover {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-ranking {
+  background: #1a1a2e;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+}
+
+.btn-ranking:hover {
+  background: #ffd700;
+  color: #000;
+}
+
+.btn-cancel {
+  background: #2a2a4a;
+  color: #aaa;
+  margin-top: 20px;
+  padding: 10px 32px;
+  width: auto;
+  border-radius: 12px;
+}
+
+/* 로그인된 유저 영역 */
+.logged-in-area {
+  margin-top: 8px;
+}
+
+.user-badge {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 14px 24px;
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.btn-logout {
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  padding: 4px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-logout:hover {
+  border-color: #ff6b9d;
+  color: #ff6b9d;
+}
+
+.logged-btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 380px;
+  margin: 0 auto;
+}
+
+/* 모달 시스템 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0f0f1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+}
+
+/* 전체화면 모달 */
+.fullscreen-modal {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: #0f0f1a !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px !important;
+  overflow-y: auto;
+}
+
+/* 모달 상단 헤더 */
+.modal-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.modal h2 {
+  font-size: 22px;
+  color: #ccc;
+  margin-bottom: 32px;
+}
+
+/* 랭킹 버튼 */
+.btn-ranking-modal {
+  background: #2a2a4a;
+  color: #ffd700;
+  border: 1px solid #ffd70055;
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ranking-modal:hover {
+  border-color: #ffd700;
+  background: #ffd70022;
+}
+
+/* 곡 선택 그리드 */
+.song-grid {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.song-card {
+  width: 260px;
+  cursor: pointer;
+  border-radius: 20px;
+  border: 2px solid #2a2a4a;
+  overflow: hidden;
+  transition: all 0.2s;
+  background: #12122a;
+}
+
+.song-card:hover {
+  border-color: #ff6b9d;
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(255, 107, 157, 0.25);
+}
+
+.song-img {
+  width: 100%;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+}
+
+.song-title {
+  padding: 16px 8px 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #eee;
+}
+
+.song-desc {
+  padding: 0 8px 18px;
+  font-size: 13px;
+  color: #888;
+}
+
+/* 곡 선택 미리보기 및 단계 이동 */
+.selected-song-preview {
+  font-size: 16px;
+  color: #ff6b9d;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: rgba(255, 107, 157, 0.1);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.back-step {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  cursor: pointer;
+  display: block;
+}
+
+.back-step:hover {
+  color: #ff6b9d;
+}
+
+/* 난이도 리스트 카드 */
+.diff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.diff-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 28px;
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.diff-card:hover {
+  transform: translateX(4px);
+}
+
+.diff-card.easy:hover   { border-color: #4caf50; box-shadow: 0 0 16px rgba(76, 175, 80, 0.2); }
+.diff-card.normal:hover { border-color: #ffc107; box-shadow: 0 0 16px rgba(255, 193, 7, 0.2); }
+.diff-card.hard:hover   { border-color: #f44336; box-shadow: 0 0 16px rgba(244, 67, 54, 0.2); }
+
+.diff-icon { font-size: 40px; }
+.diff-info { flex: 1; }
+.diff-name { font-size: 22px; font-weight: 700; color: #eee; }
+.diff-desc { font-size: 14px; color: #888; margin-top: 4px; }
+.diff-arrow { color: #444; font-size: 18px; }
+
+.diff-card.easy:hover .diff-name   { color: #4caf50; }
+.diff-card.normal:hover .diff-name { color: #ffc107; }
+.diff-card.hard:hover .diff-name   { color: #f44336; }
+
+.diff-card:hover .diff-arrow { color: #ff6b9d; }
+
+/* 닉네임 변경 팝업 (index.html) */
+.nick-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.nick-modal {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 14px;
+  padding: 24px;
+  width: 320px;
+  text-align: left;
+}
+.nick-modal h3 { margin-bottom: 8px; }
+.nick-desc { color: #aaa; font-size: 13px; margin-bottom: 14px; }
+.nick-modal input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #444;
+  background: #16213e;
+  color: #fff;
+  font-size: 15px;
+}
+.nick-modal input:focus { outline: none; border-color: #ff6b9d; }
+.nick-error { color: #ff6b9d; font-size: 13px; min-height: 18px; margin-top: 8px; }
+.nick-btns { display: flex; gap: 8px; margin-top: 10px; }
+.nick-btns button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #555;
+  background: none;
+  color: #ccc;
+  cursor: pointer;
+}
+.nick-btns .nick-save { background: #e94560; border-color: #e94560; color: #fff; font-weight: bold; }
+.nick-btns button:disabled { opacity: 0.5; cursor: default; }

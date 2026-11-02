@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0e0b1a;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#info-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  font-size: 1.5rem;
+  background: #16213e;
+}
+
+#pause-btn {
+  background: #2a2a4a;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#pause-btn:hover {
+  background: #444;
+}
+
+#game-area {
+  position: relative;
+  display: flex;
+  width: 480px;
+  height: 80vh;
+  border: 2px solid #444;
+  overflow: hidden;
+}
+
+.lane {
+  position: relative;
+  flex: 1;
+  border-right: 1px solid #333;
+  overflow: hidden;
+}
+
+/* 노트 - 기본 색상 제거 (JS에서 레인별로 지정) */
+.note {
+  position: absolute;
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+  top: -30px;
+}
+
+#judge-line {
+  position: absolute;
+  bottom: 80px;
+  width: 100%;
+  height: 4px;
+  background: white;
+  z-index: 10;
+}
+
+#key-area {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+}
+
+.key {
+  flex: 1;
+  height: 55px;
+  background: #16213e;
+  border: 2px solid #444;
+  font-weight: bold; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: 0.05s;
+}
+
+/* 레인별 키 색상 - 연하게 */
+#key-0 { border-color: #ff4dbb55; color: #ff4dbb99; }
+#key-1 { border-color: #ffe03355; color: #ffe03399; }
+#key-2 { border-color: #39ff6e55; color: #39ff6e99; }
+#key-3 { border-color: #bf5fff55; color: #bf5fff99; }
+
+/* 눌렸을 때 - 네온 진하게 */
+#key-0.active {
+  background: #ff4dbb22;
+  border-color: #ff4dbb;
+  color: #ff4dbb;
+  box-shadow: 0 0 12px #ff4dbb, 0 0 30px #ff4dbb;
+}
+#key-1.active {
+  background: #ffe03322;
+  border-color: #ffe033;
+  color: #ffe033;
+  box-shadow: 0 0 12px #ffe033, 0 0 30px #ffe033;
+}
+#key-2.active {
+  background: #39ff6e22;
+  border-color: #39ff6e;
+  color: #39ff6e;
+  box-shadow: 0 0 12px #39ff6e, 0 0 30px #39ff6e;
+}
+#key-3.active {
+  background: #bf5fff22;
+  border-color: #bf5fff;
+  color: #bf5fff;
+  box-shadow: 0 0 12px #bf5fff, 0 0 30px #bf5fff;
+}
+
+#judge-text {
+  position: fixed;
+  top: 40%;
+  font-size: 2rem;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.1s;
+}

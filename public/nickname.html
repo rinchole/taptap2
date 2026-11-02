@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리듬 게임 - 닉네임 설정</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="container">
+        <h1> 닉네임 설정</h1>
+
+        <div class="form-box">
+            <p class="desc">랭킹에 표시될 닉네임을 정해주세요.<br>한글, 영문, 숫자로 2~10자까지 가능해요.</p>
+            <input type="text" id="nickname-input" maxlength="10" placeholder="닉네임" autocomplete="off" />
+            <button id="nickname-submit">가입 완료</button>
+            <p class="error-msg" id="nickname-error"></p>
+        </div>
+
+        <div class="guest-area">
+            <button id="cancel-btn">취소하고 처음으로</button>
+        </div>
+    </div>
+
+    <script src="js/nickname.js"></script>
+</body>
+</html>

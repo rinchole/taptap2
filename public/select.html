@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리듬 게임 - 곡 선택</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/select.css">
+</head>
+<body>
+  <div class="modal-overlay" style="display:flex;">
+    <div class="modal fullscreen-modal">
+
+      <!-- STEP 1 : 소스 선택 (탭) -->
+      <div id="step1">
+        <div class="modal-header">
+          <button class="back-step" onclick="location.href='index.html'">← 홈으로</button>
+          <button class="btn-ranking-modal" onclick="location.href='ranking.html'">🏆 랭킹</button>
+        </div>
+
+        <!-- 탭 (iTunes 기본) -->
+        <div class="source-tabs">
+          <button class="source-tab active" data-source="itunes">iTunes 검색</button>
+          <button class="source-tab" data-source="recommend">맞춤 추천</button>
+        </div>
+
+        <!-- 패널: iTunes 검색 (기본 표시) -->
+        <div class="source-panel" id="panel-itunes">
+          <h2>iTunes 검색</h2>
+          <div class="itunes-search">
+            <input id="itunes-input" type="text" placeholder="아티스트 또는 곡 이름 입력 (예: newjeans, aespa, bts)" />
+            <button id="itunes-search-btn">🔍 검색</button>
+          </div>
+          <div class="quick-btns">
+            <button onclick="quickSearch('newjeans')">NewJeans</button>
+            <button onclick="quickSearch('aespa')">aespa</button>
+            <button onclick="quickSearch('twice')">TWICE</button>
+            <button onclick="quickSearch('bts')">BTS</button>
+            <button onclick="quickSearch('ive')">IVE</button>
+            <button onclick="quickSearch('kpop')">K-Pop 인기</button>
+            <button onclick="quickSearch('pop')">Pop 인기</button>
+            <button onclick="quickSearch('edm')">EDM</button>
+          </div>
+          <div id="itunes-status" class="status-msg hidden"></div>
+          <div id="itunes-results"></div>
+        </div>
+
+        <!-- 패널: 맞춤 추천 -->
+        <div class="source-panel" id="panel-recommend" style="display:none;">
+          <h2>맞춤 추천</h2>
+          <div id="recommend-content">
+            <div class="empty-state">로그인 후 곡을 플레이하시면<br>플레이 이력에 맞춰 추천이 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 : 난이도 선택 -->
+      <div id="step2" style="display:none;">
+        <div class="modal-header">
+          <button class="back-step" onclick="goBack()">← 곡 선택으로</button>
+        </div>
+
+        <div class="itunes-preview" id="itunesPreview">
+          <img id="itunesPreviewArt" src="">
+          <div>
+            <div class="pv-title" id="itunesPreviewTitle"></div>
+            <div class="pv-artist" id="itunesPreviewArtist"></div>
+            <div class="pv-genre" id="itunesPreviewGenre"></div>
+          </div>
+        </div>
+
+        <h2>난이도 선택</h2>
+        <div class="diff-list">
+          <div class="diff-card easy" onclick="confirmDiff('easy')">
+            <div class="diff-icon">🟢</div>
+            <div class="diff-info">
+              <div class="diff-name">EASY</div>
+              <div class="diff-desc">리듬 입문자 환영!</div>
+            </div>
+            <div class="diff-arrow">▶</div>
+          </div>
+          <div class="diff-card normal" onclick="confirmDiff('normal')">
+            <div class="diff-icon">🟡</div>
+            <div class="diff-info">
+              <div class="diff-name">NORMAL</div>
+              <div class="diff-desc">적당한 도전</div>
+            </div>
+            <div class="diff-arrow">▶</div>
+          </div>
+          <div class="diff-card hard" onclick="confirmDiff('hard')">
+            <div class="diff-icon">🔴</div>
+            <div class="diff-info">
+              <div class="diff-name">HARD</div>
+              <div class="diff-desc">고수만 도전하세요!</div>
+            </div>
+            <div class="diff-arrow">▶</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 : 자동 채보 로딩 -->
+      <div id="step3" style="display:none;">
+        <div class="loading-screen">
+          <div class="spinner"></div>
+          <p id="loading-msg">음원 다운로드 중...</p>
+          <p id="loading-sub" style="color:#666;font-size:13px;"></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/auto-chart.js"></script>
+  <script src="js/select.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1a1a2e;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #e94560;
+  margin-bottom: 30px;
+}
+
+.filter-area {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.filter-area select {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid #444;
+  background: #16213e;
+  color: white;
+  font-size: 1rem;
+}
+
+.filter-area button {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  background: #e94560;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.filter-area button:hover {
+  background: #c73652;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+th {
+  background: #16213e;
+  padding: 14px;
+  border-bottom: 2px solid #e94560;
+  font-size: 1rem;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  font-size: 1rem;
+}
+
+/* 순위별 강조 (금, 은, 동 색상) */
+tr:nth-child(1) td {
+  color: #FFD700;
+  font-weight: bold;
+}
+
+tr:nth-child(2) td {
+  color: #C0C0C0;
+}
+
+tr:nth-child(3) td {
+  color: #CD7F32;
+}
+
+#home-btn {
+  padding: 14px 40px;
+  border-radius: 10px;
+  border: 2px solid #444;
+  background: transparent;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#home-btn:hover {
+  border-color: #e94560;
+}

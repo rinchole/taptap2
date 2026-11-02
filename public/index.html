@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>리듬 게임</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="main-container">
+    <div class="title-area">
+      <h1 class="title">TAPTAP</h1>
+      
+    </div>
+
+    <div class="btn-group" id="cardWrapper">
+      <button class="btn btn-guest" onclick="goGuest()">게스트로 시작</button>
+      <button class="btn btn-login" onclick="location.href='login.html'">로그인</button>
+    </div>
+
+    <div class="logged-in-area" id="loggedInArea" style="display:none;">
+      <div class="user-badge">
+        👤 <span id="loggedInName"></span> 님 환영합니다!
+        <button class="btn-logout" onclick="openNicknameModal()">닉네임 변경</button>
+        <button class="btn-logout" onclick="logout()">로그아웃</button>
+      </div>
+      <div class="logged-btn-group">
+        <button class="btn btn-guest" onclick="openSongSelect()">🎮 게임 시작</button>
+        <button class="btn btn-login" onclick="location.href='ranking.html'">🏆 랭킹 보기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 닉네임 변경 팝업 -->
+  <div class="nick-overlay" id="nickOverlay" style="display:none;">
+    <div class="nick-modal">
+      <h3>닉네임 변경</h3>
+      <p class="nick-desc">한글, 영문, 숫자로 2~10자까지 가능해요.</p>
+      <input type="text" id="nickInput" maxlength="10" placeholder="새 닉네임" autocomplete="off" />
+      <p class="nick-error" id="nickError"></p>
+      <div class="nick-btns">
+        <button class="nick-cancel" onclick="closeNicknameModal()">취소</button>
+        <button class="nick-save" id="nickSaveBtn" onclick="saveNickname()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal fullscreen-modal">
+      
+      <div id="step1">
+        <div class="modal-header">
+          <button class="back-step" onclick="closeModal()">← 홈으로</button>
+          <button class="btn-ranking-modal" onclick="location.href='ranking.html'">🏆 랭킹</button>
+        </div>
+        <h2>PLAYLIST</h2>
+        <div class="song-grid">
+          <div class="song-card" onclick="selectSong('song1')">
+            <div class="song-img">
+              <img src="image/song1.png" alt="Song 1" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="song-title">곡 1</div>
+            <div class="song-desc">Pop Vibes</div>
+          </div>
+          <div class="song-card" onclick="selectSong('song2')">
+            <div class="song-img">
+              <img src="image/song2.png" alt="Song 2" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="song-title">곡 2</div>
+            <div class="song-desc">Neon Beat</div>
+          </div>
+          <div class="song-card" onclick="selectSong('song3')">
+            <div class="song-img">
+              <img src="image/song3.png" alt="Song 3" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="song-title">곡 3</div>
+            <div class="song-desc">Electric Soul</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="step2" style="display:none;">
+        <div class="modal-header">
+          <button class="back-step" onclick="goBackStep()">← 곡 선택으로</button>
+        </div>
+        <div class="selected-song-preview" id="selectedPreview"></div>
+        <h2>난이도 선택</h2>
+        <div class="diff-list">
+          <div class="diff-card easy" onclick="startGame('easy')">
+            <div class="diff-icon">🟢</div>
+            <div class="diff-info">
+              <div class="diff-name">EASY</div>
+              <div class="diff-desc">리듬 입문자 환영!</div>
+            </div>
+            <div class="diff-arrow">▶</div>
+          </div>
+          <div class="diff-card normal" onclick="startGame('normal')">
+            <div class="diff-icon">🟡</div>
+            <div class="diff-info">
+              <div class="diff-name">NORMAL</div>
+              <div class="diff-desc">적당한 도전</div>
+            </div>
+            <div class="diff-arrow">▶</div>
+          </div>
+          <div class="diff-card hard" onclick="startGame('hard')">
+            <div class="diff-icon">🔴</div>
+            <div class="diff-info">
+              <div class="diff-name">HARD</div>
+              <div class="diff-desc">고수만 도전하세요!</div>
+            </div>
+            <div class="diff-arrow">▶</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/game.js"></script>
+
+  <!-- 파티클 배경 -->
+<canvas id="bgCanvas" style="position:fixed; top:0; left:0; z-index:-1;"></canvas>
+
+<script>
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+const particles = [];
+const COLORS = ['#ff6b9d', '#c44dff', '#64c8ff', '#ffffff'];
+
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.5,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    speedX: (Math.random() - 0.5) * 0.4,
+    speedY: (Math.random() - 0.5) * 0.4,
+    opacity: Math.random() * 0.6 + 0.2
+  });
+}
+
+/*배경 캔버스 파티클 수정*/
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 배경 그라데이션
+  const grad = ctx.createRadialGradient(
+    canvas.width / 2, canvas.height / 2, 0,
+    canvas.width / 2, canvas.height / 2, canvas.width * 0.8
+  );
+  grad.addColorStop(0, '#0d0d1f');
+  grad.addColorStop(1, '#050508');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.opacity;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    p.x += p.speedX;
+    p.y += p.speedY;
+
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+  });
+
+  requestAnimationFrame(drawParticles);
+}
+
+drawParticles();
+</script>
+</body>
+</html>

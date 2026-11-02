@@ -1,0 +1,15 @@
+# 비밀 값
+.env
+.env.*
+!.env.example
+
+# 의존성
+node_modules/
+
+# 로그 / OS / 에디터
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

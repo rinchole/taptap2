@@ -1,0 +1,291 @@
+/* ──────────────────────────────────────────────
+   select.html 전용 — 탭 / iTunes 검색 / 추천 카드
+   ────────────────────────────────────────────── */
+
+.source-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  justify-content: center;
+}
+
+.source-tab {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  color: #888;
+  padding: 12px 26px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.source-tab:hover {
+  border-color: #555;
+  color: #ccc;
+}
+
+.source-tab.active {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(255, 107, 157, 0.3);
+}
+
+.source-panel {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+/* ──────── iTunes 검색 ──────── */
+.itunes-search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.itunes-search input {
+  flex: 1;
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.itunes-search input:focus {
+  border-color: #c44dff;
+  box-shadow: 0 0 0 3px rgba(196, 77, 255, 0.15);
+}
+
+.itunes-search button {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  border: none;
+  color: #fff;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.quick-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.quick-btns button {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  color: #aaa;
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.quick-btns button:hover {
+  border-color: #c44dff;
+  color: #fff;
+}
+
+#itunes-results,
+#recommend-content {
+  max-width: 720px;
+  margin: 0 auto;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.itunes-result {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.itunes-result:hover {
+  border-color: #ff6b9d;
+  background: #1a1a2e;
+  transform: translateX(4px);
+}
+
+.itunes-result.selected {
+  border-color: #ff6b9d;
+  background: rgba(255, 107, 157, 0.08);
+  box-shadow: 0 0 0 2px rgba(255, 107, 157, 0.2);
+}
+
+.itunes-result img {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  background: #1a1a2e;
+  object-fit: cover;
+}
+
+.itunes-result .info { flex: 1; min-width: 0; text-align: left; }
+.itunes-result .title { font-weight: 700; color: #eee; font-size: 15px; }
+.itunes-result .artist { color: #888; font-size: 13px; margin-top: 2px; }
+.itunes-result .genre-tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: rgba(100, 200, 255, 0.15);
+  color: #64c8ff;
+  border: 1px solid rgba(100, 200, 255, 0.3);
+}
+
+/* ──────── 추천 카드 ──────── */
+.recommend-section { margin-bottom: 24px; }
+.recommend-title {
+  font-size: 16px;
+  color: #ccc;
+  margin-bottom: 12px;
+  text-align: left;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recommend-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.recommend-card {
+  flex: 1 1 200px;
+  min-width: 200px;
+  background: linear-gradient(135deg, #1a1a2e, #12122a);
+  border: 2px solid #2a2a4a;
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.recommend-card:hover {
+  border-color: #c44dff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(196, 77, 255, 0.2);
+}
+
+.recommend-card .cat-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.recommend-card.retry .cat-badge { background: #ff4d4d22; color: #ff7777; border: 1px solid #ff4d4d44; }
+.recommend-card.levelup .cat-badge { background: #39ff6e22; color: #39ff6e; border: 1px solid #39ff6e44; }
+.recommend-card.new .cat-badge { background: #64c8ff22; color: #64c8ff; border: 1px solid #64c8ff44; }
+
+.recommend-card .rec-title { font-weight: 700; color: #fff; font-size: 15px; margin-bottom: 4px; }
+.recommend-card .rec-artist { font-size: 12px; color: #888; margin-bottom: 8px; }
+.recommend-card .rec-reason { font-size: 12px; color: #aaa; font-style: italic; line-height: 1.4; }
+
+.empty-state {
+  text-align: center;
+  color: #666;
+  padding: 40px 20px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ──────── 로딩 화면 (자동 채보 중) ──────── */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 24px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #2a2a4a;
+  border-top-color: #ff6b9d;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#loading-msg {
+  color: #ccc;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+#loading-sub {
+  color: #888;
+  font-size: 13px;
+  margin-top: -16px;
+}
+
+/* 상태 메시지 */
+.status-msg {
+  margin: 12px auto;
+  max-width: 640px;
+  padding: 10px 16px;
+  background: #12122a;
+  border-left: 3px solid #64c8ff;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #ccc;
+  text-align: left;
+}
+
+.status-msg.err { border-color: #ff5566; color: #ff8899; }
+.status-msg.ok { border-color: #39ff6e; color: #aff5c6; }
+.status-msg.hidden { display: none; }
+
+/* iTunes 곡일 때 선택 미리보기 (이미지 포함) */
+.itunes-preview {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: rgba(255, 107, 157, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.itunes-preview img {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.itunes-preview .pv-title { font-weight: 700; color: #fff; font-size: 16px; }
+.itunes-preview .pv-artist { color: #ccc; font-size: 13px; }
+.itunes-preview .pv-genre { color: #64c8ff; font-size: 11px; margin-top: 4px; }
