@@ -128,7 +128,29 @@ function goBack() {
   showStep(1);
 }
 
-// 맞춤 추천 — 플레이 이력 기반
+// 맞춤 추천 — 서버에 쌓인 플레이 이력(play_history) 기반
+async function fetchTrackById(trackId) {
+  const r = await fetch('https://itunes.apple.com/lookup?id=' + encodeURIComponent(trackId) + '&entity=song');
+  const d = await r.json();
+  return (d.results || []).find(t => String(t.trackId) === String(trackId)) || null;
+}
+
+// 다시 도전 / 한 단계 위로 카드 클릭 -> 곡 정보를 가져와 바로 그 난이도로 시작
+async function startRecommended(item, diff, card) {
+  const reasonEl = card.querySelector('.rec-reason');
+  const original = reasonEl.textContent;
+  reasonEl.textContent = '곡 정보를 불러오는 중...';
+  try {
+    const track = await fetchTrackById(item.trackId);
+    if (!track || !track.previewUrl) throw new Error('미리듣기를 찾지 못했어요.');
+    selectedTrack = track;
+    confirmDiff(diff);
+  } catch (e) {
+    reasonEl.textContent = '불러오지 못했어요. 다시 눌러 주세요.';
+    setTimeout(() => { reasonEl.textContent = original; }, 2500);
+  }
+}
+
 async function loadRecommendations() {
   const wrap = document.getElementById('recommend-content');
   const token = localStorage.getItem('token');
@@ -138,68 +160,101 @@ async function loadRecommendations() {
   }
   wrap.innerHTML = '<div class="empty-state">추천 곡을 불러오는 중...</div>';
 
-  const recent = JSON.parse(localStorage.getItem('recentPlays') || '[]');
-
-  // 정확도 70% 미만 -> 다시 도전
-  const retry = recent.filter(p => p.accuracy < 70).slice(-3);
-  // 정확도 90% 이상 + hard 아님 -> 한 단계 위로
-  const levelup = recent.filter(p => p.accuracy >= 90 && p.diff !== 'hard').slice(-3);
-
-  // 신곡 - iTunes 인기 K-Pop
-  let popular = [];
+  // 내 이력 기반 추천 (서버)
+  let rec = { retry: [], levelup: [], topArtists: [] };
   try {
-    const r = await fetch('https://itunes.apple.com/search?term=kpop&entity=song&limit=6');
-    const d = await r.json();
-    popular = (d.results || []).filter(s => s.previewUrl);
+    const res = await fetch('/api/scores/recommendations', { headers: { 'Authorization': 'Bearer ' + token } });
+    if (res.status === 401) {
+      ['token', 'username', 'nickname'].forEach(k => localStorage.removeItem(k));
+      wrap.innerHTML = '<div class="empty-state">🔐 로그인이 만료됐어요.<br>다시 로그인해 주세요.</div>';
+      return;
+    }
+    if (res.ok) rec = await res.json();
+    else console.warn('추천 API 실패', res.status);
   } catch (e) {
-    console.warn('인기곡 fetch 실패', e);
+    console.warn('추천 API 호출 실패', e);
+  }
+
+  // 새로운 곡: 많이 플레이한 아티스트의 곡, 이력이 없으면 인기 K-Pop
+  const hasArtists = rec.topArtists && rec.topArtists.length > 0;
+  const terms = hasArtists ? rec.topArtists : ['kpop'];
+  const perTerm = hasArtists ? 2 : 6;
+  const newTracks = [];
+  try {
+    const results = await Promise.all(terms.map(term =>
+      fetch('https://itunes.apple.com/search?term=' + encodeURIComponent(term) + '&entity=song&limit=10').then(r => r.json())
+    ));
+    const seenIds = new Set();
+    results.forEach(d => {
+      let n = 0;
+      (d.results || []).forEach(song => {
+        if (n >= perTerm || !song.previewUrl || seenIds.has(song.trackId)) return;
+        seenIds.add(song.trackId);
+        newTracks.push(song);
+        n++;
+      });
+    });
+  } catch (e) {
+    console.warn('새로운 곡 fetch 실패', e);
   }
 
   let html = '';
 
-  if (retry.length) {
+  if (rec.retry.length) {
     html += '<div class="recommend-section">' +
       '<div class="recommend-title">🔥 다시 도전 — 정확도가 아쉬웠던 곡</div>' +
       '<div class="recommend-row">' +
-      retry.map(p => recommendCardItunesPlay(p, 'retry', '지난번 정확도 ' + p.accuracy + '%')).join('') +
+      rec.retry.map((p, i) => recommendCardPlay(p, 'retry', '지난번 정확도 ' + p.accuracy + '% — 같은 난이도로 다시!', i)).join('') +
       '</div></div>';
   }
-  if (levelup.length) {
+  if (rec.levelup.length) {
     html += '<div class="recommend-section">' +
       '<div class="recommend-title">🚀 한 단계 위로 — 다음 난이도 도전</div>' +
       '<div class="recommend-row">' +
-      levelup.map(p => recommendCardItunesPlay(p, 'levelup', p.diff + ' ' + p.accuracy + '% — 다음 난이도 어때요?')).join('') +
+      rec.levelup.map((p, i) => recommendCardPlay(p, 'levelup',
+        String(p.diff).toUpperCase() + ' ' + p.accuracy + '% → ' + String(p.nextDiff).toUpperCase() + ' 도전!', i)).join('') +
       '</div></div>';
   }
-  if (popular.length) {
+  if (newTracks.length) {
     html += '<div class="recommend-section">' +
-      '<div class="recommend-title">🆕 새로운 곡 — iTunes 인기 K-Pop</div>' +
+      '<div class="recommend-title">' + (hasArtists ? '🆕 새로운 곡 — 자주 플레이한 아티스트' : '🆕 새로운 곡 — iTunes 인기 K-Pop') + '</div>' +
       '<div class="recommend-row">' +
-      popular.map((s, idx) => recommendCardItunes(s, idx)).join('') +
+      newTracks.map((s, idx) => recommendCardItunes(s, idx)).join('') +
       '</div></div>';
   }
 
   if (!html) {
-    wrap.innerHTML = '<div class="empty-state">아직 플레이 이력이 없어요.<br>iTunes 탭에서 몇 곡 플레이하고 다시 와주세요!</div>';
+    wrap.innerHTML = '<div class="empty-state">아직 추천할 곡이 없어요.<br>iTunes 탭에서 몇 곡 플레이하고 다시 와주세요!</div>';
     return;
   }
 
   wrap.innerHTML = html;
 
-  wrap.querySelectorAll('.recommend-card.itunes').forEach((card) => {
+  wrap.querySelectorAll('.recommend-card.retry').forEach(card => {
     card.addEventListener('click', () => {
-      const idx = parseInt(card.dataset.idx);
-      const track = popular[idx];
+      const item = rec.retry[parseInt(card.dataset.idx)];
+      if (item) startRecommended(item, item.diff, card);
+    });
+  });
+  wrap.querySelectorAll('.recommend-card.levelup').forEach(card => {
+    card.addEventListener('click', () => {
+      const item = rec.levelup[parseInt(card.dataset.idx)];
+      if (item) startRecommended(item, item.nextDiff, card);
+    });
+  });
+  wrap.querySelectorAll('.recommend-card.itunes').forEach(card => {
+    card.addEventListener('click', () => {
+      const track = newTracks[parseInt(card.dataset.idx)];
       if (track) selectItunesTrack(track);
     });
   });
 }
 
-function recommendCardItunesPlay(play, category, reason) {
-  return '<div class="recommend-card ' + category + '">' +
+function recommendCardPlay(item, category, reason, idx) {
+  return '<div class="recommend-card ' + category + '" data-idx="' + idx + '">' +
     '<div class="cat-badge">' + (category === 'retry' ? '🔥 RETRY' : '🚀 LEVEL UP') + '</div>' +
-    '<div class="rec-title">' + escapeHtml(play.title || play.song) + '</div>' +
-    '<div class="rec-artist">' + escapeHtml(play.artist || '') + ' · ' + escapeHtml(play.diff) + '</div>' +
+    '<div class="rec-title">' + escapeHtml(item.trackTitle || '(제목 없음)') + '</div>' +
+    '<div class="rec-artist">' + escapeHtml(item.trackArtist || '') + ' · ' + escapeHtml(String(item.diff).toUpperCase()) + '</div>' +
     '<div class="rec-reason">' + escapeHtml(reason) + '</div>' +
     '</div>';
 }
