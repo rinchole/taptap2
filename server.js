@@ -95,6 +95,40 @@ async function initDb() {
     console.error('[DB] scores 테이블 생성 실패:', e.message);
   }
 
+  // play_history 테이블 (플레이할 때마다 한 줄씩 쌓는 이력)
+  try {
+    await db.query(
+      'CREATE TABLE IF NOT EXISTS play_history (' +
+      '  id INT AUTO_INCREMENT PRIMARY KEY,' +
+      '  user_id INT NOT NULL,' +
+      '  song VARCHAR(100) NOT NULL,' +
+      '  diff VARCHAR(10) NOT NULL,' +
+      '  score INT NOT NULL DEFAULT 0,' +
+      '  combo INT NOT NULL DEFAULT 0,' +
+      '  accuracy INT NOT NULL DEFAULT 0,' +
+      '  grade CHAR(1) NOT NULL DEFAULT \'D\',' +
+      '  track_title VARCHAR(200) DEFAULT \'\',' +
+      '  track_artist VARCHAR(200) DEFAULT \'\',' +
+      '  track_artwork VARCHAR(500) DEFAULT \'\',' +
+      '  played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,' +
+      '  INDEX idx_user_played (user_id, played_at),' +
+      '  FOREIGN KEY (user_id) REFERENCES users(id)' +
+      ') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+    );
+
+    // 이력이 비어 있을 때만 기존 scores 를 한 번 복사
+    const [[{ cnt }]] = await db.query('SELECT COUNT(*) AS cnt FROM play_history');
+    if (cnt === 0) {
+      await db.query(
+        'INSERT INTO play_history ' +
+        '(user_id, song, diff, score, combo, accuracy, grade, track_title, track_artist, track_artwork, played_at) ' +
+        'SELECT user_id, song, diff, score, combo, accuracy, grade, track_title, track_artist, track_artwork, played_at FROM scores'
+      );
+    }
+  } catch (e) {
+    console.error('[DB] play_history 테이블 생성 실패:', e.message);
+  }
+
   // 새 컬럼 추가 (이미 있으면 조용히 무시)
   const addCols = [
     "ALTER TABLE scores ADD COLUMN track_title VARCHAR(200) DEFAULT ''",

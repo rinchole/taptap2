@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAPTAP - 마이페이지</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(circle at 50% 40%, #0d0d1f, #050508 80%);
+      color: #fff; min-height: 100vh; padding: 32px 20px 60px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .back {
+      background: transparent; color: #aaa; border: 1px solid #2a2a4a; border-radius: 30px;
+      padding: 8px 18px; font-size: 14px; cursor: pointer;
+    }
+    .back:hover { color: #fff; border-color: #ff6b9d; }
+    h1 { font-size: 28px; letter-spacing: 2px; text-shadow: 0 0 20px rgba(255,107,157,.6); }
+    .card { background: #12122a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 20px; margin-bottom: 18px; }
+    .card h2 { font-size: 15px; color: #c9a0ff; margin-bottom: 14px; font-weight: 700; }
+
+    .profile { display: flex; align-items: center; gap: 18px; }
+    .avatar {
+      width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg,#ff6b9d,#c44dff);
+      display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; flex-shrink: 0;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .nick-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .nick { font-size: 22px; font-weight: 800; }
+    .small-btn {
+      background: transparent; color: #ccc; border: 1px solid #3a3a5a; border-radius: 20px;
+      padding: 5px 14px; font-size: 12px; cursor: pointer;
+    }
+    .small-btn:hover { border-color: #ff6b9d; color: #fff; }
+    .nick-edit { display: none; margin-top: 10px; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .nick-edit input {
+      background: #0b0b1a; border: 1px solid #3a3a5a; color: #fff; border-radius: 10px;
+      padding: 8px 12px; font-size: 14px; width: 170px;
+    }
+    .nick-msg { font-size: 12px; color: #ff8a8a; margin-top: 6px; min-height: 16px; }
+    .nick-msg.ok { color: #7be0a0; }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat { background: #0b0b1a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 16px 10px; text-align: center; }
+    .stat .num { font-size: 26px; font-weight: 800; color: #ff6b9d; }
+    .stat .lbl { font-size: 12px; color: #888; margin-top: 4px; }
+
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+    .bar-label { width: 56px; color: #ccc; font-weight: 700; }
+    .bar-track { flex: 1; height: 12px; background: #0b0b1a; border-radius: 8px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg,#ff6b9d,#c44dff); min-width: 2px; }
+    .bar-cnt { width: 34px; text-align: right; color: #aaa; }
+
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .item { display: flex; align-items: center; gap: 12px; background: #0b0b1a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 10px 12px; }
+    .item img, .item .ph { width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0; background: #1a1a2e; }
+    .item .info { flex: 1; min-width: 0; }
+    .item .t { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item .a { font-size: 12px; color: #888; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item .meta { text-align: right; font-size: 12px; color: #aaa; flex-shrink: 0; }
+    .item .score { font-size: 15px; color: #fff; font-weight: 800; }
+    .grade { display: inline-block; min-width: 22px; text-align: center; padding: 1px 6px; border-radius: 6px; font-weight: 800; font-size: 12px; background: #2a2a4a; color: #fff; }
+    .grade.S { background: #ffd700; color: #222; }
+    .grade.A { background: #ff6b9d; }
+    .grade.B { background: #c44dff; }
+    .grade.C { background: #64c8ff; color: #222; }
+    .empty { color: #777; font-size: 13px; text-align: center; padding: 14px 0; }
+    .err { color: #ff8a8a; text-align: center; padding: 30px 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <button class="back" onclick="location.href='index.html'">← 홈으로</button>
+      <h1>마이페이지</h1>
+      <span style="width:84px"></span>
+    </div>
+
+    <div id="content">
+      <div class="empty">불러오는 중...</div>
+    </div>
+  </div>
+  <script src="js/mypage.js"></script>
+</body>
+</html>

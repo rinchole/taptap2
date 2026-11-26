@@ -78,6 +78,20 @@ router.post('/', authMiddleware, async (req, res) => {
        Number(score) || 0, Number(combo) || 0, Number(accuracy) || 0, grade,
        String(trackTitle || ''), String(trackArtist || ''), String(trackArtwork || '')]
     );
+
+    // 플레이 이력 한 줄 추가 (실패해도 베스트 점수 저장은 그대로 성공 처리)
+    try {
+      await db.query(
+        'INSERT INTO play_history (user_id, song, diff, score, combo, accuracy, grade, track_title, track_artist, track_artwork) ' +
+        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [user_id, songKey, diff,
+         Number(score) || 0, Number(combo) || 0, Number(accuracy) || 0, grade,
+         String(trackTitle || ''), String(trackArtist || ''), String(trackArtwork || '')]
+      );
+    } catch (histErr) {
+      console.error('[POST /api/scores] 이력 저장 실패:', histErr.code, histErr.message);
+    }
+
     res.json({ success: true });
   } catch (err) {
     console.error('[POST /api/scores] DB error:', err.code, err.message);
@@ -184,6 +198,120 @@ router.get('/me', authMiddleware, async (req, res) => {
   } catch (err) {
     console.error('[GET /api/scores/me] DB error:', err.code, err.message);
     res.status(500).json({ error: '내 기록 조회 실패', detail: err.message });
+  }
+});
+
+/**
+ * @openapi
+ * /api/scores/me/summary:
+ *   get:
+ *     summary: 마이페이지 요약 (프로필, 총 플레이 수, 평균 정확도, 등급·난이도 분포, 곡별 베스트, 최근 이력)
+ *     tags: [Scores]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: 요약 데이터 }
+ */
+router.get('/me/summary', authMiddleware, async (req, res) => {
+  const uid = req.user.id;
+  try {
+    const [[user]] = await db.query(
+      'SELECT nickname, profile_image AS profileImage FROM users WHERE id = ?', [uid]
+    );
+    const [[total]] = await db.query(
+      'SELECT COUNT(*) AS totalPlays, ROUND(AVG(accuracy)) AS avgAccuracy FROM play_history WHERE user_id = ?',
+      [uid]
+    );
+    const [grades] = await db.query(
+      'SELECT grade, COUNT(*) AS cnt FROM play_history WHERE user_id = ? GROUP BY grade', [uid]
+    );
+    const [diffs] = await db.query(
+      'SELECT diff, COUNT(*) AS cnt FROM play_history WHERE user_id = ? GROUP BY diff', [uid]
+    );
+    const [bests] = await db.query(
+      'SELECT SUBSTRING(song, 8) AS trackId, diff, score, accuracy, grade, ' +
+      '       track_title AS trackTitle, track_artist AS trackArtist, track_artwork AS trackArtwork ' +
+      'FROM scores WHERE user_id = ? AND song LIKE \'itunes:%\' ORDER BY score DESC LIMIT 30',
+      [uid]
+    );
+    const [recent] = await db.query(
+      'SELECT SUBSTRING(song, 8) AS trackId, diff, score, accuracy, grade, ' +
+      '       track_title AS trackTitle, track_artist AS trackArtist, track_artwork AS trackArtwork, ' +
+      '       played_at AS playedAt ' +
+      'FROM play_history WHERE user_id = ? AND song LIKE \'itunes:%\' ORDER BY id DESC LIMIT 20',
+      [uid]
+    );
+
+    const gradeDist = { S: 0, A: 0, B: 0, C: 0, D: 0 };
+    grades.forEach(g => { gradeDist[g.grade] = g.cnt; });
+    const diffCounts = { easy: 0, normal: 0, hard: 0 };
+    diffs.forEach(d => { diffCounts[d.diff] = d.cnt; });
+
+    res.json({
+      nickname: user ? user.nickname : '',
+      profileImage: user ? user.profileImage : '',
+      totalPlays: total.totalPlays || 0,
+      avgAccuracy: total.avgAccuracy === null ? 0 : Number(total.avgAccuracy),
+      gradeDist, diffCounts, bests, recent
+    });
+  } catch (err) {
+    console.error('[GET /api/scores/me/summary] DB error:', err.code, err.message);
+    res.status(500).json({ error: '마이페이지 조회 실패', detail: err.message });
+  }
+});
+
+/**
+ * @openapi
+ * /api/scores/recommendations:
+ *   get:
+ *     summary: 내 플레이 이력 기반 맞춤 추천 (다시 도전 / 한 단계 위로 / 자주 들은 아티스트)
+ *     tags: [Scores]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200: { description: retry, levelup, topArtists }
+ */
+const NEXT_DIFF = { easy: 'normal', normal: 'hard' };
+
+router.get('/recommendations', authMiddleware, async (req, res) => {
+  const uid = req.user.id;
+  try {
+    // 최근 100판에서 곡·난이도별 가장 최근 기록만 남긴다
+    const [rows] = await db.query(
+      'SELECT SUBSTRING(song, 8) AS trackId, diff, accuracy, ' +
+      '       track_title AS trackTitle, track_artist AS trackArtist, track_artwork AS trackArtwork ' +
+      'FROM play_history WHERE user_id = ? AND song LIKE \'itunes:%\' ORDER BY id DESC LIMIT 100',
+      [uid]
+    );
+    const seen = new Set();
+    const latest = [];
+    for (const r of rows) {
+      const key = r.trackId + '|' + r.diff;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      latest.push(r);
+    }
+
+    // 다시 도전: 최근 정확도 70% 미만
+    const retry = latest.filter(r => r.accuracy < 70).slice(0, 3);
+
+    // 한 단계 위로: 정확도 90% 이상이고 다음 난이도를 아직 안 한 곡
+    const levelup = latest
+      .filter(r => r.accuracy >= 90 && NEXT_DIFF[r.diff] && !seen.has(r.trackId + '|' + NEXT_DIFF[r.diff]))
+      .slice(0, 3)
+      .map(r => Object.assign({}, r, { nextDiff: NEXT_DIFF[r.diff] }));
+
+    // 새로운 곡: 많이 플레이한 아티스트 (실제 곡 검색은 프론트가 iTunes 로 한다)
+    const [artists] = await db.query(
+      'SELECT track_artist AS artist, COUNT(*) AS cnt FROM play_history ' +
+      'WHERE user_id = ? AND track_artist <> \'\' GROUP BY track_artist ORDER BY cnt DESC LIMIT 3',
+      [uid]
+    );
+
+    res.json({ retry, levelup, topArtists: artists.map(a => a.artist) });
+  } catch (err) {
+    console.error('[GET /api/scores/recommendations] DB error:', err.code, err.message);
+    res.status(500).json({ error: '추천 조회 실패', detail: err.message });
   }
 });
 
